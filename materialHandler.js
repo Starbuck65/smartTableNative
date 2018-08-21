@@ -1,27 +1,22 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 import SocketIOClient from 'socket.io-client';
-
-const test_materials = {
-  "0000000000000001": '#FE0104',
-   "0000000000000002": '#0172FE',
-"0000000000000003": '#F9FE01',
- "0000000000000004": '#15FE01',
- "0000000000000005": '#000000'
-}
-
+import axios from 'axios';
+import { list_materials } from './list_materials.js';
 
 export default class MaterialHandler extends Component {
     constructor(props) {
       super(props);
       this.state = {
         material: [ {"TAG":"Waiting for detections..."} ],
-        backgroundColor: '#F5FCFF'
+        //nameMaterial: 'test'
+        namelist: [ 'test', 'test2']
+
       };
 
       this.onReceivedMessage = this.onReceivedMessage.bind(this);
 
-      this.socket = SocketIOClient('http://192.168.0.13:4200');
+      this.socket = SocketIOClient('http://192.168.0.15:4200');
       this.socket.on('tag',this.onReceivedMessage);
 }
 
@@ -31,10 +26,21 @@ export default class MaterialHandler extends Component {
       }
 
     epcTranslator(materials){
-      var color_code = test_materials[materials[0].TAG];
-      console.log('Tag: ' + test_materials[materials[0].TAG]);
-      console.log('Color code: ' + color_code);
-      this.setState({backgroundColor: color_code});
+      /*
+      var name_material = list_materials[materials[0].TAG];
+      console.log('Detected Tag: ' + list_materials[materials[0].TAG]);
+      console.log('Detected Name: ' + name_material);
+      this.setState({nameMaterial: name_material});
+      */
+
+      var recv_materials = []
+      for (var i = 0; i < this.state.material.length; i++) {
+        recv_materials[i] = list_materials[materials[i].TAG];
+        console.log('Detected Tag '+ i +': ' + list_materials[materials[i].TAG]);
+        console.log('Detected Name '+ i +': ' + recv_materials[i]);
+      }
+
+      this.setState({namelist: recv_materials});
 
     }
 
@@ -43,22 +49,47 @@ export default class MaterialHandler extends Component {
       for (var i = 0; i < this.state.material.length; i++) {
         list.push(<Text
           style={{
-            backgroundColor: this.state.backgroundColor,
-            flex:1          
+            backgroundColor: "#FFFFFF" ,
+            flex:1
           }}
-          key={i} >{this.state.material[i].TAG}</Text>);
+          key={i} >{this.state.material[i].TAG} {this.state.namelist[i]}</Text>);
       }
       return list;
 
     }
 
+    printMaterials(){
+
+      var base_url = 'http://192.168.0.15:8088/download_pdf?';
+      var url = base_url;
+      for (var i = 0; i < this.state.material.length; i++) {
+          url = url + 'value' + (i+1) + '=' + this.state.namelist[i] + '&';
+      }
+
+      console.log(url)
+
+
+      axios.get(url)
+        .then(function(response){
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
 
     render() {
         return (
               <View style={{flex:1}}>
                 {this.listMaterials()}
+                <Button onPress={this.printMaterials}
+                  title="Print"
+                  color="#0000FF"
+                  />
               </View>
-        );
+
+
+              );
     }
 }
 const styles = StyleSheet.create({
