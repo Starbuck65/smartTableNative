@@ -7,9 +7,9 @@ export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.body}>
-          <MaterialHandler />
-        </View>
+          <Text style={styles.header}>          </Text>
+          <Text style={styles.header}>Smart Table</Text>
+          <MaterialHandler style={styles.materialhandler} />
       </View>
     );
   }
@@ -17,15 +17,19 @@ export default class App extends Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
 
-  body: {
-    flex: 1,
-  },
-  instructions: {
+  header: {
     textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    fontSize: 46,
+    fontWeight: 'bold',
   },
+  materialhandler: {
+
+  },
+
 });

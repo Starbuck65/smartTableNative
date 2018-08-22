@@ -24,6 +24,8 @@
     "express": "^4.16.3",
     "react": "16.3.1",
     "react-native": "~0.55.2",
+    "react-native-animate-loading-button": "^1.0.3",
+    "react-native-loading-button": "^1.0.2",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1"
   }
