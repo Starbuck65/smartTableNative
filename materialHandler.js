@@ -9,9 +9,9 @@ export default class MaterialHandler extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        material: [ {"TAG":"Waiting for detections..."} ],
-        namelist: [ 'Please, place the desired sample on the table', 'test2'],
-        isLoading: false
+        material: [ 'Waiting', 'Detections' ],
+        namelist: [ 'Please, place the desired sample on the table'],
+
       };
 
       this.onReceivedMessage = this.onReceivedMessage.bind(this);
@@ -26,6 +26,7 @@ export default class MaterialHandler extends Component {
       }
 
     epcTranslator(materials){
+
       /*
       var name_material = list_materials[materials[0].TAG];
       console.log('Detected Tag: ' + list_materials[materials[0].TAG]);
@@ -35,9 +36,8 @@ export default class MaterialHandler extends Component {
 
       var recv_materials = []
       for (var i = 0; i < this.state.material.length; i++) {
-        recv_materials[i] = list_materials[materials[i].TAG];
-        console.log('Detected Tag '+ i +': ' + list_materials[materials[i].TAG]);
-        console.log('Detected Name '+ i +': ' + recv_materials[i]);
+        recv_materials[i] = list_materials[materials[i]];
+        console.log('Detected: '+ i +': ' + recv_materials[i]);
       }
 
       this.setState({namelist: recv_materials});
@@ -79,18 +79,18 @@ export default class MaterialHandler extends Component {
       // Get request to RPi
       axios.get(url)
         .then(function(response){
-          //console.log(response);
           console.log("Print sent");
-          //this.loadingButton.showLoading(false);
+
         })
         .catch(function (error) {
-          //console.log(error);
           console.log("ERROR: Can't print.");
           return alert("Network Error: Printer Unreachable.");
         })
 
         // Disable animation
-        this.loadingButton.showLoading(false);
+        setTimeout(() => {
+            this.loadingButton.showLoading(false);
+        }, 15000);
 
     }
 
@@ -98,7 +98,7 @@ export default class MaterialHandler extends Component {
     render() {
         return (
           <View style={{flex: 2, justifyContent: 'space-around'}} >
-            
+
             <View>
               {this.listMaterials()}
             </View>

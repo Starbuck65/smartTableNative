@@ -1,6 +1,7 @@
 
 export const list_materials = {
   //DISK COLOUR
+  "0000000000000000": 'Please, place the desired sample on the table',
   "0000000000000001": 'NCS 500 N', //
   "0000000000000002": 'NCS 2500 N', //
   "0000000000000003": 'NCS 5000 N', //
