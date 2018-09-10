@@ -1,35 +1,49 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 import MaterialHandler from './materialHandler.js';
+import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text } from 'native-base';
 
 type Props = {};
 export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-          <Text style={styles.header}>          </Text>
-          <Text style={styles.header}>Smart Table</Text>
-          <MaterialHandler style={styles.materialhandler} />
-      </View>
-    );
-  }
+
+  constructor() {
+  super();
+  this.state = {
+    isReady: false
+  };
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
+  async componentWillMount() {
+  await Expo.Font.loadAsync({
+    'Roboto': require('native-base/Fonts/Roboto.ttf'),
+    'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+  });
+  this.setState({ isReady: true });
+}
 
-  header: {
-    textAlign: 'center',
-    fontSize: 46,
-    fontWeight: 'bold',
-  },
-  materialhandler: {
 
-  },
+  render() {
+    if (!this.state.isReady) {
+      return <Expo.AppLoading />;
+    }
 
-});
+    return (
+      <Container>
+       <Header>
+       <Body>
+          <Title>Smart Table Interface</Title>
+      </Body>
+       </Header>
+
+       <Content>
+        <MaterialHandler />
+        </Content>
+
+        <Footer>
+
+        </Footer>
+       </Container>
+
+    );
+  }
+
+}

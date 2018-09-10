@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name":"SmartTable Interface",
-    "description":"Smart Table Interface",
+    "name": "SmartTable Interface CO3_t1",
+    "description": "Smart Table Interface",
     "sdkVersion": "27.0.0",
-    "android":{
-      "package":"com.ikea.cocreation",
-      "versionCode":1
-    }
+    "android": {
+      "package": "com.ikea.cocreation",
+      "versionCode": 1
+    },
+    "slug": "smarttable-interface-co3_t1",
+    "version": "0.1.0"
   }
 }

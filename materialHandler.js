@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
+import {Platform, StyleSheet, View } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
 import axios from 'axios';
 import { list_materials } from './list_materials.js';
+import { Content,Card , CardItem, Left,Body,Text, Button} from 'native-base';
+
+
+const ip_r= 'http://172.18.13.214';
 
 export default class MaterialHandler extends Component {
     constructor(props) {
@@ -16,7 +20,7 @@ export default class MaterialHandler extends Component {
 
       this.onReceivedMessage = this.onReceivedMessage.bind(this);
 
-      this.socket = SocketIOClient('http://192.168.0.15:4200');
+      this.socket = SocketIOClient(ip_r + ':4200');
       this.socket.on('tag',this.onReceivedMessage);
 }
 
@@ -48,14 +52,16 @@ export default class MaterialHandler extends Component {
       var list =[];
 
       for (var i = 0; i < this.state.material.length; i++) {
-        list.push(<Text
-          style={{
-            backgroundColor: "#FFFFFF" ,
-            textAlign: 'center',
-            fontSize: 26,
-
-          }}
-          key={i} >{this.state.namelist[i]} </Text>);
+        list.push(<Card
+          key={i} >
+          <CardItem>
+            <Left>
+              <Body>
+                <Text>{this.state.namelist[i]}</Text>
+              </Body>
+            </Left>
+          </CardItem>
+          </Card>);
       }
       return list;
 
@@ -63,10 +69,10 @@ export default class MaterialHandler extends Component {
 
     printMaterials() {
       // Show button animation
-      this.loadingButton.showLoading(true);
+      //this.loadingButton.showLoading(true);
 
       // Prepare URL and add material names
-      var base_url = 'http://192.168.0.15:8088/print_pdf?';
+      var base_url = ip_r + ':8088/print_pdf?';
       var url = base_url;
       for (var i = 0; i < this.state.material.length; i++) {
           url = url + 'value' + (i+1) + '=' + this.state.namelist[i] + '&';
@@ -89,7 +95,7 @@ export default class MaterialHandler extends Component {
 
         // Disable animation
         setTimeout(() => {
-            this.loadingButton.showLoading(false);
+            //this.loadingButton.showLoading(false);
         }, 15000);
 
     }
@@ -97,26 +103,14 @@ export default class MaterialHandler extends Component {
 
     render() {
         return (
-          <View style={{flex: 2, justifyContent: 'space-around'}} >
+          <Content>
+          {this.listMaterials()}
+            <Button onPress={this.printMaterials.bind(this)} light><Text> Print </Text></Button>
+          </Content>
 
-            <View>
-              {this.listMaterials()}
-            </View>
 
-            <View>
-              <AnimateLoadingButton
-                ref={c => (this.loadingButton =c)}
-                onPress={this.printMaterials.bind(this)}
-                width={300}
-                height={50}
-                title="Print"
-                titleFontSize={26}
-                titleColor="rgb(255,255,255)"
-                backgroundColor="rgb(0,15,255)"
-                borderRadius={4}
-                />
-            </View>
-          </View>
+
+
 
               );
     }
