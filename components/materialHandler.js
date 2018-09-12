@@ -253,7 +253,7 @@ export default class MaterialHandler extends Component {
               repeat={true}
               resizeMode='cover'
               paused={false}
-              style={styles.backgroundVideo} />
+                style={styles.backgroundVideo} />
             </View>
 
           </View>
