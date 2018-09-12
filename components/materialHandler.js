@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet } from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import SocketIOClient from 'socket.io-client';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
 import axios from 'axios';
@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1
   },
-
   deck: {
     height: 850,
     backgroundColor: "#FFFFFF"
@@ -32,9 +31,19 @@ const styles = StyleSheet.create({
     elevation:3
 },
 backgroundVideo: {
-    flex: 1
+  width:780,
+  height:1000,
+  flex: 1,
+  backgroundColor: "#E8E8E8"
   },
-
+extra:{
+  flex: 1,
+  position: 'absolute',
+   top: 0,
+   left: 0,
+   bottom: 0,
+   right: 0,
+}
 });
 
 export default class MaterialHandler extends Component {
@@ -222,10 +231,10 @@ export default class MaterialHandler extends Component {
     }
 
     videoWait = ()=>{
-      return(<View>
-        <Video source={{uri: 'https://player.vimeo.com/video/288710158'}}   // Can be a URL or a local file.
-       style={styles.backgroundVideo} />
-       </View>
+      return(
+        <Video source={back}   // Can be a URL or a local file.
+        style={styles.backgroundVideo} />
+
       )
     }
 
@@ -234,8 +243,22 @@ export default class MaterialHandler extends Component {
       const style = this.state.modalStyle;
       const materials = this.state.materials;
         return (
+
           <Content>
-          {materials.length!==0 ? this.listMaterials(materials): this.videoWait()}
+          <View>
+
+            <View styles={styles.extra}>
+              <Video source={back}
+              muted={false}
+              repeat={true}
+              resizeMode='cover'
+              paused={false}
+              style={styles.backgroundVideo} />
+            </View>
+
+          </View>
+
+          {materials.length!==0 ? this.listMaterials(materials): null}
             <Button onPress={this.printMaterials.bind(this)} light><Text> Print </Text></Button>
             <Modal
               animationType="slide"
@@ -253,6 +276,7 @@ export default class MaterialHandler extends Component {
                   </Button>
                 </View>
               </Modal>
+
           </Content>
 
               );

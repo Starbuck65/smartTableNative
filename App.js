@@ -12,7 +12,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { connect } from 'react-redux';
 import { actions } from './store/actions';
-
+import {Text} from 'native-base';
 
 const GRAPHCMS_API = 'https://api-euwest.graphcms.com/v1/cjlqmvcyy0zny01gppvg11ts2/master'
 
@@ -37,10 +37,10 @@ class App extends Component {
   }
 
   async componentWillMount() {
-    await Expo.Font.loadAsync({
+/*    await Expo.Font.loadAsync({
       'Roboto': require('native-base/Fonts/Roboto.ttf'),
       'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-    });
+    });*/
     this.setState({ isReady: true });
   }
 
@@ -49,7 +49,7 @@ class App extends Component {
     const { navigation } = this.props;
     const ip = navigation.getParam('ip','0');
     if (!this.state.isReady) {
-      return <Expo.AppLoading />;
+      return <Text>Loading</Text>;
     }
 
     return (
@@ -81,7 +81,7 @@ class LoadingScreen extends Component{
   };
 
   render() {
-      return <Expo.AppLoading />;
+      return <Text>Loading</Text>;
     }
 }
 
