@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
 },
 backgroundVideo: {
     flex: 1
+    width:800,
+    heigh:800
   },
 
 });
@@ -223,8 +225,8 @@ export default class MaterialHandler extends Component {
 
     videoWait = ()=>{
       return(<View>
-        <Video source={{uri: 'https://player.vimeo.com/video/288710158'}}   // Can be a URL or a local file.
-       style={styles.backgroundVideo} />
+        <Video source={back}   // Can be a URL or a local file.
+        style={styles.backgroundVideo} />
        </View>
       )
     }

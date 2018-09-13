@@ -9,5 +9,7 @@
     },
     "slug": "smarttable-interface_test",
     "version": "0.1.0"
-  }
+  },
+  "name": "smartTableNative",
+  "displayName": "SmartTable Interface_test"
 }
