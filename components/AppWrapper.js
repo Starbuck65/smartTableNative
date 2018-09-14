@@ -47,9 +47,7 @@ const GET_MATERIALS = gql`
 
 class AppWrapper extends Component {
 
-  settingOpen = ()=>{
-    this.props.navigation.navigate('Auth');
-  }
+
 
   render() {
     return(
@@ -57,22 +55,9 @@ class AppWrapper extends Component {
       {({loading, error, data}) =>{
         if (loading) return (<Text>Loading...</Text>);
         if (error) return `Error! ${error.message}`;
-
         return (
-          <Container>
-            <Content>
-              <MaterialHandler data={data} ip={this.props.ip}/>
-            </Content>
-            <Footer>
-             <FooterTab>
-             <Button onPress={()=>{this.settingOpen()}}>
-              <Icon name="settings" />
-            </Button>
-              </FooterTab>
-            </Footer>
-          </Container>
-        )
-      }}
+          <MaterialHandler data={data} ip={this.props.ip}/>
+        )}}
       </Query>
     );
   }

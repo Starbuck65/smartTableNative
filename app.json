@@ -1,15 +1,4 @@
 {
-  "expo": {
-    "name": "SmartTable Interface_test",
-    "description": "Smart Table Interface",
-    "sdkVersion": "27.0.0",
-    "android": {
-      "package": "com.ikea.cocreation",
-      "versionCode": 1
-    },
-    "slug": "smarttable-interface_test",
-    "version": "0.1.0"
-  },
   "name": "smartTableNative",
-  "displayName": "SmartTable"
+  "displayName": "smartTableNative"
 }

@@ -29,29 +29,16 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isReady: false
-    } ;
     console.log("Props en el constructor");
     console.log(props);
   }
 
-  async componentWillMount() {
-/*    await Expo.Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-    });*/
-    this.setState({ isReady: true });
-  }
+
 
 
   render() {
     const { navigation } = this.props;
     const ip = navigation.getParam('ip','0');
-    if (!this.state.isReady) {
-      return <Text>Loading</Text>;
-    }
-
     return (
         <AppWrapper ip={ip}/>
     );
@@ -92,7 +79,7 @@ export const Navigator = createSwitchNavigator (
   {
     AuthLoading: LoadingScreen,
     App: App,
-    Auth: AuthStack,
+    Auth: AuthStack
   },
   {
     initialRouteName: 'AuthLoading',

@@ -9,7 +9,8 @@ export default class SettingScreenRoot extends Component {
 
   constructor(){
     super();
-    this.ip = '';
+    this.state = {ip:''};
+    this._bootstrapAsync();
 
   }
 
@@ -21,11 +22,21 @@ export default class SettingScreenRoot extends Component {
     }
   }
 
+  _bootstrapAsync = async () => {
+    const ipConfig = await AsyncStorage.getItem('SERVER_IP');
+    // This will switch to the App screen or Auth screen and this loading
+    // screen will be unmounted and thrown away.
+    console.log(ipConfig)
+    if (ipConfig){
+      //this.props.loadIp(ipConfig);
+      this.setState({ip: ipConfig});
+    }
+  };
 
   saveandLogOut = ()=>{
-    this._storeData(this.ip);
-    console.log("IP en configuracion: " + this.ip);
-    this.props.navigation.navigate('App', {ip : this.ip});
+    this._storeData(this.state.ip);
+    console.log("IP en configuracion: " + this.state.ip);
+    this.props.navigation.navigate('App', {ip : this.state.ip});
   }
 
   render(){
@@ -35,7 +46,7 @@ export default class SettingScreenRoot extends Component {
           <Form>
             <Item inlineLabel>
               <Label>Password</Label>
-              <Input onChangeText={(value) => this.ip = value} name="pass">2</Input>
+              <Input onChangeText={(value) => this.setState({ip: value})} name="pass">{this.state.ip}</Input>
             </Item>
             <Item inlineLabel>
               <Button onPress={()=>{this.saveandLogOut()}}><Text>Save and Logout</Text></Button>

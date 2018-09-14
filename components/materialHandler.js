@@ -5,11 +5,13 @@ import AnimateLoadingButton from 'react-native-animate-loading-button';
 import axios from 'axios';
 import {Image, Modal} from 'react-native';
 import { list_materials } from './list_materials.js';
-import { Container, Content,Card , DeckSwiper, CardItem, Left,Body,Text, Button, H1, H3, Grid, Row, Col, Icon, View} from 'native-base';
+import { Container, Content,Card , DeckSwiper, CardItem, Footer,FooterTab,Left,Body,Text, Button, H1, H3, Grid, Row, Col, Icon, View} from 'native-base';
 import Markdown from 'react-native-markdown-renderer';
 import Swiper from 'react-native-deck-swiper';
 import Video from 'react-native-video';
-const back = require ('./background.mp4');
+const back = require ('./tablet_instructions.mp4');
+import { withNavigation } from 'react-navigation';
+
 
 const styles = StyleSheet.create({
 
@@ -34,10 +36,17 @@ backgroundVideo: {
   width:780,
   height:1000,
   flex: 1,
-  backgroundColor: "#E8E8E8"
+  backgroundColor: "#FFFFFF"
   },
-extra:{
+modalHelp:
+{
+  backgroundColor: "#FFFFFF",
   flex: 1,
+  padding: 20,
+},
+
+extra:{
+  backgroundColor: "#FF0000",
   position: 'absolute',
    top: 0,
    left: 0,
@@ -46,15 +55,18 @@ extra:{
 }
 });
 
-export default class MaterialHandler extends Component {
-
+class MaterialHandler extends Component {
+  settingOpen = ()=>{
+    this.props.navigation.navigate('Auth');
+  }
     constructor(props) {
       super(props);
       this.state = {
         materials: [],
         namelist: [ 'Please, place the desired sample on the table'],
         modalVisible: false,
-        modalStyle : {}
+        modalStyle : {},
+        helpVisible: false,
       };
       this.onReceivedMessage = this.onReceivedMessage.bind(this);
       this.ip = this.props.ip;
@@ -148,7 +160,7 @@ export default class MaterialHandler extends Component {
       const names = found.links.map((element, key)=>{
         return element.name
       })
-      return <Body><H3>We recomend you: </H3><Text>{names.join(', ')}</Text></Body>;
+      return <Body><H3>Wir empfehlen dir, ihn wie folgt zu kombinieren: </H3><Text>{names.join(', ')}</Text></Body>;
 
     }
 
@@ -159,8 +171,10 @@ export default class MaterialHandler extends Component {
       // Prepare URL and add material names
       var base_url = this.ip + ':8088/print_pdf?';
       var url = base_url;
-      for (var i = 0; i < this.state.material.length; i++) {
-          url = url + 'value' + (i+1) + '=' + this.state.namelist[i] + '&';
+      const materials = this.state.materials;
+      for (var i = 0; i < materials.length; i++) {
+        const material = this.getMaterialInfo(materials[i]);
+          url = url + 'value' + (i+1) + '=' + material.name + '&';
       }
       // Set timestamp
       url = url + String(Date.now());
@@ -232,8 +246,18 @@ export default class MaterialHandler extends Component {
 
     videoWait = ()=>{
       return(
-        <Video source={back}   // Can be a URL or a local file.
-        style={styles.backgroundVideo} />
+        <View>
+
+        <View styles={styles.extra}>
+          <Video source={back}
+          muted={false}
+          repeat={true}
+          resizeMode='cover'
+          paused={false}
+            style={styles.backgroundVideo} />
+        </View>
+
+        </View>
 
       )
     }
@@ -243,23 +267,12 @@ export default class MaterialHandler extends Component {
       const style = this.state.modalStyle;
       const materials = this.state.materials;
         return (
+          <Container>
+            <Content>
 
-          <Content>
-          <View>
 
-            <View styles={styles.extra}>
-              <Video source={back}
-              muted={false}
-              repeat={true}
-              resizeMode='cover'
-              paused={false}
-                style={styles.backgroundVideo} />
-            </View>
+          {materials.length!==0 ? this.listMaterials(materials): this.videoWait()}
 
-          </View>
-
-          {materials.length!==0 ? this.listMaterials(materials): null}
-            <Button onPress={this.printMaterials.bind(this)} light><Text> Print </Text></Button>
             <Modal
               animationType="slide"
               transparent={false}
@@ -276,9 +289,44 @@ export default class MaterialHandler extends Component {
                   </Button>
                 </View>
               </Modal>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                hardwareAccelerated={true}
+                visible={this.state.helpVisible}
+                onRequestClose={() => {
+                }}>
+                  <View style={styles.modalHelp}>
+                      <Video source={back}
+                          muted={false}
+                          repeat={true}
+                          resizeMode='cover'
+                          paused={false}
+                          style={styles.backgroundVideo} />
 
+                    <Button onPress = {() => {
+                        this.setState({helpVisible:false});
+                      }}>
+                        <Text>Close</Text>
+                    </Button>
+                  </View>
+                </Modal>
           </Content>
+          <Footer>
+           <FooterTab>
+           <Button onPress={()=>this.printMaterials()} primary>
+           <Icon name="print" /><Text>Druck</Text></Button>
+           <Button onPress={()=>this.setState({helpVisible: true})} light>
+           <Icon name="help" /><Text>Hilfe</Text></Button>
 
+           <Button onPress={()=>{this.settingOpen()}} light>
+            <Icon name="settings" />
+          </Button>
+            </FooterTab>
+          </Footer>
+          </Container>
               );
     }
 }
+
+export default withNavigation(MaterialHandler);

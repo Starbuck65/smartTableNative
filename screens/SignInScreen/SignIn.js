@@ -10,18 +10,10 @@ export default class SignInScreen extends Component<Props> {
   constructor() {
     super();
     this.state = {
-      isReady: false,
       currentPass: '',
     } ;
   }
 
-  async componentWillMount() {
-  /*  await Expo.Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-    });*/
-    this.setState({ isReady: true });
-  }
 
   handleTouch(key){
     const prev = this.state.currentPass;
@@ -35,11 +27,11 @@ export default class SignInScreen extends Component<Props> {
       this.props.navigation.navigate('Settings');
     }
   }
-
+  handleExit = ()=>{
+      this.props.navigation.navigate('App');
+  }
   render(){
-    if (!this.state.isReady) {
-      return <Expo.AppLoading />;
-    }
+
     return(
       <Container>
           <Grid>
@@ -73,6 +65,7 @@ export default class SignInScreen extends Component<Props> {
             </Row>
             <Row>
               <Col><Button onPress={()=>{this.handleLogIn()}} large block><Text>LogIn</Text></Button></Col>
+              <Col><Button onPress={()=>{this.handleExit()}} large block><Text>Exit</Text></Button></Col>
             </Row>
           </Grid>
 
