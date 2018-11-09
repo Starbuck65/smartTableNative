@@ -36,6 +36,7 @@
     "react-native-animate-loading-button": "^1.0.3",
     "react-native-cli": "^2.0.1",
     "react-native-deck-swiper": "^1.5.17",
+    "react-native-google-analytics-bridge": "^6.1.2",
     "react-native-loading-button": "^1.0.2",
     "react-native-markdown-renderer": "^3.2.8",
     "react-native-video": "^3.1.0",

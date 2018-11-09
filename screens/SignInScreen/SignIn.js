@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Container, Header, Content, Button, Text, Form, Item, Input, Label, Grid, Row, Col } from 'native-base';
 
 
-const PASSWORD= '1'
+const PASSWORD= '0742'
 
 
 export default class SignInScreen extends Component<Props> {

@@ -39,8 +39,9 @@ class App extends Component {
   render() {
     const { navigation } = this.props;
     const ip = navigation.getParam('ip','0');
+    const printer = navigation.getParam('printer','0');
     return (
-        <AppWrapper ip={ip}/>
+        <AppWrapper ip={ip} printer={printer}/>
     );
   }
 
@@ -54,13 +55,14 @@ class LoadingScreen extends Component{
     // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
     const ipConfig = await AsyncStorage.getItem('SERVER_IP');
+    const printerConfig = await AsyncStorage.getItem('PRINTER_IP');
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
     console.log("tengo datos");
     console.log(ipConfig)
     if (ipConfig){
       //this.props.loadIp(ipConfig);
-      this.props.navigation.navigate('App', {ip : ipConfig});
+      this.props.navigation.navigate('App', {ip : ipConfig, printer: printerConfig});
     }else{
       this.props.navigation.navigate('Auth');
 
@@ -89,6 +91,7 @@ export const Navigator = createSwitchNavigator (
 class TableApp extends Component {
   render() {
     return (
+
       <ApolloProvider client={client}>
         <Provider store={store}>
           <Navigator />

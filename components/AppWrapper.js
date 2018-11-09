@@ -55,8 +55,9 @@ class AppWrapper extends Component {
       {({loading, error, data}) =>{
         if (loading) return (<Text>Loading...</Text>);
         if (error) return `Error! ${error.message}`;
+        console.log(data);
         return (
-          <MaterialHandler data={data} ip={this.props.ip}/>
+          <MaterialHandler data={data} ip={this.props.ip} printer={this.props.printer}/>
         )}}
       </Query>
     );

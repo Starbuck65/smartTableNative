@@ -5,7 +5,7 @@ import AnimateLoadingButton from 'react-native-animate-loading-button';
 import axios from 'axios';
 import {Image, Modal} from 'react-native';
 import { list_materials } from './list_materials.js';
-import { Container, Content,Card , DeckSwiper, CardItem, Footer,FooterTab,Left,Body,Text, Button, H1, H3, Grid, Row, Col, Icon, View} from 'native-base';
+import { Container, Content,Card ,Input, Label, DeckSwiper, CardItem, Footer,FooterTab,Left, Right, Body,Text, Button, H1, H3, H2, Grid, Row, Col, Icon, View, Thumbnail, Form, Item,List, ListItem} from 'native-base';
 import Markdown from 'react-native-markdown-renderer';
 import Swiper from 'react-native-deck-swiper';
 import Video from 'react-native-video';
@@ -19,6 +19,12 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1
   },
+  mail: {
+    padding: 20,
+    flex: 1,
+    backgroundColor: "#FFFFFF"
+
+  },
   deck: {
     height: 850,
     backgroundColor: "#FFFFFF"
@@ -31,6 +37,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
     elevation:3
+},
+related: {
+  paddingBottom: 10
 },
 backgroundVideo: {
   width:780,
@@ -67,16 +76,29 @@ class MaterialHandler extends Component {
         modalVisible: false,
         modalStyle : {},
         helpVisible: false,
+        mailVisible: false,
+        email: '',
       };
       this.onReceivedMessage = this.onReceivedMessage.bind(this);
+      this.pong = this.pong.bind(this);
+
       this.ip = this.props.ip;
+      this.printer = this.props.printer;
       const socket_uri = 'http://' + this.ip + ':4200';
       console.log(socket_uri);
       this.socket = SocketIOClient(socket_uri);
       this.socket.on('tag',this.onReceivedMessage);
+      this.socket.on('ping', this.pong);
       console.log("en el controller");
       console.log(this.ip);
 }
+
+
+  pong(data){
+    this.socket.emit('pong', {beat:1});
+    console.log('PONG');
+    //alert(this.socket);
+  }
 
     onReceivedMessage(messages) {
       this.setState({materials: messages});
@@ -96,6 +118,9 @@ class MaterialHandler extends Component {
 
       for (var i = 0; i < materials.length; i++) {
         const material = this.getMaterialInfo(materials[i]);
+        if (material == null )
+          return
+
         const style = this.getStyleInfo(material.style);
 
         list.push(<Card
@@ -153,15 +178,87 @@ class MaterialHandler extends Component {
       const found = recomendations.find((element)=>{
         return element.material.id === materialID;
       });
+      console.log(found);
       if (found === undefined){
         return r;
       }
 
-      const names = found.links.map((element, key)=>{
-        return element.name
+      const names = found.links.map((element, i)=>{
+        console.log(element);
+        const _id = element.id;
+        const obj = this.props.data.materials.find(obj => obj.id == _id);
+        console.log(obj);
+        //return <ListItem key={i} thumbnail><Left><Thumbnail source={{uri: 'https://media.graphcms.com/resize=w:200,h:200,fit:crop/' + obj.photo[0].handle}}/></Left><Body><Text>{element.name}</Text></Body></ListItem>
+        return <Col key={i}><Thumbnail source={{uri: 'https://media.graphcms.com/resize=w:200,h:200,fit:crop/' + obj.photo[0].handle}}/><Text>{element.name}</Text></Col>
+        //return element.name
       })
-      return <Body><H3>Wir empfehlen dir, ihn wie folgt zu kombinieren: </H3><Text>{names.join(', ')}</Text></Body>;
+      //return <Body><H3>Wir empfehlen dir, ihn wie folgt zu kombinieren: </H3><Text>{names.join(', ')}</Text></Body>;
+      return <Body><H2 style={styles.related}>Wir empfehlen dir, ihn wie folgt zu kombinieren: </H2><Grid>{names}</Grid></Body>;
 
+    }
+
+
+    nprintMaterials(){
+      var base_url = 'http://' + this.printer + ':4200/print';
+
+      const materials = this.state.materials;
+      var _m = [];
+      for (var i = 0; i < materials.length; i++) {
+        _m.push(this.getMaterialInfo(materials[i]));
+      }
+
+      console.log(_m);
+      console.log(base_url);
+      axios.post(base_url,{
+          materials: _m
+      })
+        .then(function(response){
+          console.log("Print sent");
+          console.log(response);
+          alert(response.data);
+        })
+        .catch(function (error) {
+          console.log("ERROR: Can't print.");
+          console.log(error);
+          return alert("Network Error: Printer Unreachable.");
+        })
+
+        // Disable animation
+        setTimeout(() => {
+            //this.loadingButton.showLoading(false);
+        }, 15000);
+    }
+
+    sendMaterials(){
+      const mail = this.state.email;
+      console.log(mail);
+      var base_url = 'http://' + this.ip + ':4200/mail';
+      console.log(base_url);
+      const materials = this.state.materials;
+      var _m = [];
+      for (var i = 0; i < materials.length; i++) {
+        _m.push(this.getMaterialInfo(materials[i]));
+      }
+
+      console.log(_m);
+      axios.post(base_url,{
+          materials: _m,
+          email: mail
+      })
+        .then(function(response){
+          console.log("Print sent");
+          console.log(response);
+          alert(response.data);
+        })
+        .catch(function (error) {
+          console.log("ERROR: Can't print.");
+          return alert("Network Error: Printer Unreachable.");
+        })
+
+        // Disable animation
+        setTimeout(() => {
+            //this.loadingButton.showLoading(false);
+        }, 15000);
     }
 
     printMaterials() {
@@ -169,7 +266,7 @@ class MaterialHandler extends Component {
       //this.loadingButton.showLoading(true);
 
       // Prepare URL and add material names
-      var base_url = this.ip + ':8088/print_pdf?';
+      var base_url = 'http://' + this.ip + ':8088/print_pdf?';
       var url = base_url;
       const materials = this.state.materials;
       for (var i = 0; i < materials.length; i++) {
@@ -185,7 +282,7 @@ class MaterialHandler extends Component {
       axios.get(url)
         .then(function(response){
           console.log("Print sent");
-
+          alert("Printing...");
         })
         .catch(function (error) {
           console.log("ERROR: Can't print.");
@@ -242,6 +339,29 @@ class MaterialHandler extends Component {
       </View>
 
         );
+    }
+
+    footerComp = () => {
+      const style = this.state.modalStyle;
+      const materials = this.state.materials;
+      return(
+        <Footer>
+         <FooterTab>
+          <Button disabled={materials.length==0} onPress={()=>this.nprintMaterials()} primary>
+            <Icon name="print" /><Text>Druck</Text>
+          </Button>
+          <Button  disabled={materials.length==0} onPress={()=>this.setState({mailVisible: true})} primary>
+            <Icon name="mail" /><Text>Send by mail</Text>
+          </Button>
+         <Button  disabled={materials.length==0} onPress={()=>this.setState({helpVisible: true})} light>
+         <Icon name="help" /><Text>Hilfe</Text></Button>
+
+         <Button onPress={()=>{this.settingOpen()}} light>
+          <Icon name="settings" />
+        </Button>
+          </FooterTab>
+        </Footer>
+      )
     }
 
     videoWait = ()=>{
@@ -311,19 +431,43 @@ class MaterialHandler extends Component {
                     </Button>
                   </View>
                 </Modal>
-          </Content>
-          <Footer>
-           <FooterTab>
-           <Button onPress={()=>this.printMaterials()} primary>
-           <Icon name="print" /><Text>Druck</Text></Button>
-           <Button onPress={()=>this.setState({helpVisible: true})} light>
-           <Icon name="help" /><Text>Hilfe</Text></Button>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  hardwareAccelerated={true}
+                  visible={this.state.mailVisible}
+                  onRequestClose={() => {
+                  }}>
+                    <View style={styles.mail}>
 
-           <Button onPress={()=>{this.settingOpen()}} light>
-            <Icon name="settings" />
-          </Button>
-            </FooterTab>
-          </Footer>
+                    <Content>
+                      <Form>
+                        <Item inlineLabel last>
+                          <Label>Your email address:</Label>
+                          <Input  name="email" onChangeText={(value) => this.setState({email: value})} autoFocus= {true} keyboardType={'email-address'} autoCorrect={false} clearButtonMode={'always'}>{this.state.email}</Input>
+                          </Item>
+                        <Button block success large onPress = {() => {
+                          this.sendMaterials();
+                          this.setState({email: ''})
+                            this.setState({mailVisible:false});
+                          }}>
+                            <Text>Send</Text>
+                        </Button>
+                        <Button block onPress = {() => {
+                          this.setState({email: ''})
+                            this.setState({mailVisible:false});
+                          }}>
+                            <Text>Cancel</Text>
+                        </Button>
+                      </Form>
+                    </Content>
+
+                    </View>
+                  </Modal>
+          </Content>
+          {this.footerComp()}
+
+
           </Container>
               );
     }
