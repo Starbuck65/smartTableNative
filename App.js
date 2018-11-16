@@ -85,6 +85,7 @@ export const Navigator = createSwitchNavigator (
   },
   {
     initialRouteName: 'AuthLoading',
+    backBehavior: 'initialRoute'
   }
 )
 

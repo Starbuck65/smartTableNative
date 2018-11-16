@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet, Alert} from 'react-native';
 import SocketIOClient from 'socket.io-client';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
 import axios from 'axios';
@@ -215,12 +215,12 @@ class MaterialHandler extends Component {
         .then(function(response){
           console.log("Print sent");
           console.log(response);
-          alert(response.data);
+          Alert.alert('Druck', response.data);
         })
         .catch(function (error) {
           console.log("ERROR: Can't print.");
           console.log(error);
-          return alert("Network Error: Printer Unreachable.");
+          return Alert.alert("Network Error: Printer Unreachable.");
         })
 
         // Disable animation
@@ -248,11 +248,11 @@ class MaterialHandler extends Component {
         .then(function(response){
           console.log("Print sent");
           console.log(response);
-          alert(response.data);
+          Alert.alert('Email', response.data);
         })
         .catch(function (error) {
-          console.log("ERROR: Can't print.");
-          return alert("Network Error: Printer Unreachable.");
+          console.log("ERROR: Can't send the mail.");
+          return alert("Error", 'Error');
         })
 
         // Disable animation
@@ -356,7 +356,7 @@ class MaterialHandler extends Component {
          <Button  disabled={materials.length==0} onPress={()=>this.setState({helpVisible: true})} light>
          <Icon name="help" /><Text>Hilfe</Text></Button>
 
-         <Button onPress={()=>{this.settingOpen()}} light>
+         <Button disabled={materials.length!=0} onPress={()=>{this.settingOpen()}} light>
           <Icon name="settings" />
         </Button>
           </FooterTab>
